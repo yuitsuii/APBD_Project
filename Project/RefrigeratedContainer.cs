@@ -17,8 +17,7 @@ public class RefrigeratedContainer : Container
     };
 
     public RefrigeratedContainer(double maxPayload, string productType, double temperature) 
-        : base(maxPayload, productType, temperature)
-    {
+        : base(maxPayload, productType, temperature) {
         try
         {
             if (!AllowedProducts.ContainsKey(productType))

@@ -18,7 +18,7 @@ public class GasContainer : Container, IHazardNotifier
     {
         try
         {
-            CurrentLoad = CurrentLoad * 0.05;
+            CurrentLoad *= 0.05;
             Console.WriteLine($"Gas container emptied. 5% of the cargo remains: {CurrentLoad} kg.");
         }
         catch (Exception ex)
