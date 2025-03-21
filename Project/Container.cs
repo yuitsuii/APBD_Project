@@ -47,7 +47,7 @@ public abstract class Container
     public virtual void LoadContainer(double cargoWeight)
     {
         double allowedWeight = GetMaxAllowedWeight();
-        if (CurrentLoad + cargoWeight >allowedWeight)
+        if (CurrentLoad + cargoWeight > allowedWeight)
         {
             throw new OverflowException("Current load is too big.");
         }

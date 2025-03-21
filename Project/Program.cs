@@ -63,5 +63,116 @@ class Program
         ship.PrintShipInfo();
         Console.WriteLine("\nShip 2:");
         ship2.PrintShipInfo();
+
+        Console.WriteLine("\nEdge Case 1: Loading a container beyond its maximum payload...");
+        try
+        {
+            gasContainer.LoadContainer(600);
+        }
+        catch (OverfillException ex)
+        {
+            Console.WriteLine($"Expected error: {ex.Message}");
+        }
+
+        Console.WriteLine("\nEdge Case 2: Loading a hazardous liquid container beyond 50% capacity...");
+        try
+        {
+            liquidContainer.LoadContainer(600);
+        }
+        catch (OverfillException ex)
+        {
+            Console.WriteLine($"Expected error: {ex.Message}");
+        }
+
+        Console.WriteLine("\nEdge Case 3: Loading a non-hazardous liquid container beyond 90% capacity...");
+        LiquidContainer nonHazardousLiquidContainer = new LiquidContainer(1000, "milk");
+        try
+        {
+            nonHazardousLiquidContainer.LoadContainer(950);
+        }
+        catch (OverfillException ex)
+        {
+            Console.WriteLine($"Expected error: {ex.Message}");
+        }
+
+        Console.WriteLine("\nEdge Case 4: Loading a refrigerated container with an invalid product type...");
+        try
+        {
+            RefrigeratedContainer invalidProductContainer = new RefrigeratedContainer(800, "invalid", 2);
+        }
+        catch (ArgumentException ex)
+        {
+            Console.WriteLine($"Expected error: {ex.Message}");
+        }
+
+        Console.WriteLine("\nEdge Case 5: Loading a refrigerated container with a temperature outside the allowed range...");
+        try
+        {
+            RefrigeratedContainer invalidTempContainer = new RefrigeratedContainer(800, "fish", 20);
+        }
+        catch (ArgumentException ex)
+        {
+            Console.WriteLine($"Expected error: {ex.Message}");
+        }
+
+        Console.WriteLine("\nEdge Case 6: Transferring a container to a ship that is already at maximum capacity...");
+        Ship fullShip = new Ship(25, 1, 2000);
+        fullShip.LoadContainer(gasContainer);
+        try
+        {
+            fullShip.TransferContainer(ship2, gasContainer.SerialNumber);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Expected error: {ex.Message}");
+        }
+
+        Console.WriteLine("\nEdge Case 7: Replacing a container with one that exceeds the ship's weight limit...");
+        Container heavyContainer = new GasContainer(5000, "hazardous", 10);
+        try
+        {
+            Console.WriteLine("DEBUG: Containers before calling ReplaceContainer:");
+            foreach (var c in ship.Containers)
+            {
+                Console.WriteLine($" - {c.SerialNumber}");
+            }
+            ship2.ReplaceContainer(refrigeratedContainer.SerialNumber, heavyContainer);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Expected error: {ex.Message}");
+        }
+
+        Console.WriteLine("\nEdge Case 8: Unloading a container that is not on the ship...");
+        try
+        {
+            ship.UnloadContainer("KON-C-999");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Expected error: {ex.Message}");
+        }
+
+        Console.WriteLine("\nEdge Case 9: Removing a container that is not on the ship...");
+        try
+        {
+            ship.RemoveContainer("KON-C-999");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Expected error: {ex.Message}");
+        }
+
+        Console.WriteLine("\nEdge Case 10: Transferring a container that is not on the ship...");
+        try
+        {
+            ship.TransferContainer(ship2, "KON-C-999");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Expected error: {ex.Message}");
+        }
+        
+        
     }
 }
