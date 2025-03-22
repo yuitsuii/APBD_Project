@@ -53,7 +53,7 @@ class Program
         ship.PrintShipInfo();
 
         Console.WriteLine("\nCreating another ship for transfer testing...");
-        Ship ship2 = new Ship(30, 3, 3000);
+        Ship ship2 = new Ship(30, 3, 3);
         
         Console.WriteLine("\nTransferring a container between ships...");
         ship.TransferContainer(ship2, refrigeratedContainer.SerialNumber);
@@ -63,6 +63,11 @@ class Program
         ship.PrintShipInfo();
         Console.WriteLine("\nShip 2:");
         ship2.PrintShipInfo();
+        
+        
+        GasContainer gasContainer2 = new GasContainer(500, "hazardous", 10);
+        gasContainer2.LoadContainer(200);
+        ship2.LoadContainer(gasContainer2);
 
         Console.WriteLine("\nEdge Case 1: Loading a container beyond its maximum payload...");
         try
@@ -120,7 +125,8 @@ class Program
         fullShip.LoadContainer(gasContainer);
         try
         {
-            fullShip.TransferContainer(ship2, gasContainer.SerialNumber);
+            Console.WriteLine($"DEBUG: fullShip container count: {fullShip.Containers.Count}, Max allowed: {fullShip.MaxContainers}");
+            ship2.TransferContainer(fullShip, gasContainer2.SerialNumber);
         }
         catch (Exception ex)
         {
@@ -128,11 +134,12 @@ class Program
         }
 
         Console.WriteLine("\nEdge Case 7: Replacing a container with one that exceeds the ship's weight limit...");
-        Container heavyContainer = new GasContainer(5000, "hazardous", 10);
+        Container heavyContainer = new RefrigeratedContainer(5000, "fish", 2);
+        heavyContainer.LoadContainer(4500);
         try
         {
             Console.WriteLine("DEBUG: Containers before calling ReplaceContainer:");
-            foreach (var c in ship.Containers)
+            foreach (var c in ship2.Containers)
             {
                 Console.WriteLine($" - {c.SerialNumber}");
             }

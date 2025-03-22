@@ -73,36 +73,34 @@ public class Ship
         Console.WriteLine($"Container {serialNumber} has been unloaded.");
     }
 
-    public void ReplaceContainer(string oldSerial, Container newContainer)
+public void ReplaceContainer(string oldSerial, Container newContainer)
+{
+    var oldContainer = Containers.FirstOrDefault(c => c.SerialNumber == oldSerial);
+    if (oldContainer == null)
     {
-        var oldContainer = Containers.FirstOrDefault(c => c.SerialNumber == oldSerial);
-        if (!Containers.Any(c => c.SerialNumber == oldSerial))
-        {
-            Console.WriteLine($"Error: Container {oldSerial} not found.");
-            return;
-        }
-        
-        double newTotalWeight = GetTotalWeight() - (oldContainer.TareWeight + oldContainer.CurrentLoad) 
-                                + (newContainer.TareWeight + newContainer.CurrentLoad);
-
-        if (newTotalWeight > MaxWeight)
-        {
-            Console.WriteLine($"Error: Replacing container {oldSerial} would exceed the ship's weight limit.");
-            return;
-        }
-        
-        RemoveContainer(oldSerial);
-        
-        if (Containers.Count < MaxContainers && GetTotalWeight() + newContainer.TareWeight + newContainer.CurrentLoad <= MaxWeight)
-        {
-            Containers.Add(newContainer);
-            Console.WriteLine($"Container {oldSerial} replaced with {newContainer.SerialNumber}.");
-        }
-        else
-        {
-            Console.WriteLine($"Error: Could not replace {oldSerial}. Capacity or weight exceeded.");
-        }
+        Console.WriteLine($"Error: Container {oldSerial} not found.");
+        return;
     }
+    
+    double newTotalWeight = GetTotalWeight() + newContainer.TareWeight + newContainer.CurrentLoad;
+
+    if (newTotalWeight > MaxWeight)
+    {
+        Console.WriteLine($"Error: Replacing container {oldSerial} would exceed the ship's weight limit.");
+        return;
+    }
+
+    if (Containers.Count < MaxContainers)
+    {
+        RemoveContainer(oldSerial);
+        Containers.Add(newContainer);
+        Console.WriteLine($"Container {oldSerial} replaced with {newContainer.SerialNumber}.");
+    }
+    else
+    {
+        Console.WriteLine($"Error: Could not replace {oldSerial}. Capacity exceeded.");
+    }
+}
 
     public void TransferContainer(Ship otherShip, string serialNumber)
     {
@@ -118,7 +116,6 @@ public class Ship
             Console.WriteLine($"Error: Destination ship cannot carry more containers. It is already at maximum capacity.");
             return;
         }
-
         if (otherShip.GetTotalWeight() + container.TareWeight + container.CurrentLoad > otherShip.MaxWeight)
         {
             Console.WriteLine($"Error: Destination ship's weight capacity would be exceeded.");
