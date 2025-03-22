@@ -16,28 +16,18 @@ public class RefrigeratedContainer : Container
         { "eggs", (18, 20) }
     };
 
-    public RefrigeratedContainer(double maxPayload, string productType, double temperature) 
-        : base(maxPayload, productType, temperature) {
-        try
+    public RefrigeratedContainer(double maxPayload, string productType, double temperature, double height, double depth, double width)
+        : base(maxPayload, productType, height, depth, width, temperature)
+    {
+        if (!AllowedProducts.ContainsKey(productType))
         {
-            if (!AllowedProducts.ContainsKey(productType))
-            {
-                throw new ArgumentException("Invalid product type for refrigerated container.");
-            }
+            throw new ArgumentException($"Invalid product type: {productType}.");
+        }
 
-            var (minTemp, maxTemp) = AllowedProducts[productType];
-            if (temperature < minTemp || temperature > maxTemp)
-            {
-                throw new ArgumentException($"Temperature out of range for {productType}. Allowed: {minTemp} - {maxTemp} °C");
-            }
-        }
-        catch (ArgumentException ex)
+        var (minTemp, maxTemp) = AllowedProducts[productType];
+        if (temperature < minTemp || temperature > maxTemp)
         {
-            Console.WriteLine($"Error: {ex.Message}");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Unexpected error during container initialization: {ex.Message}");
+            throw new ArgumentException($"Temperature {temperature}°C out of range for {productType}. Allowed: {minTemp} - {maxTemp}°C");
         }
     }
 
@@ -51,14 +41,14 @@ public class RefrigeratedContainer : Container
         try
         {
             double maxAllowedWeight = GetMaxAllowedWeight();
-            
-            if (CurrentLoad + cargoWeight > maxAllowedWeight)
+
+            if (cargoWeight + MassOfCargo > maxAllowedWeight)
             {
                 throw new OverfillException($"Cannot load {cargoWeight} kg. It exceeds the allowed weight for hazardous cargo.");
             }
-            
-            CurrentLoad += cargoWeight;
-            Console.WriteLine($"Successfully loaded {cargoWeight} kg into refrigerated container. Current load: {CurrentLoad} kg.");
+
+            MassOfCargo += cargoWeight;
+            Console.WriteLine($"Successfully loaded {cargoWeight} kg into refrigerated container. Mass of cargo: {MassOfCargo} kg.");
         }
         catch (OverfillException ex)
         {
