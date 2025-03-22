@@ -14,8 +14,8 @@ public abstract class Container
     public string ProductType { get; set; }
     public double Temperature { get; set; }
     
-    private const double WeightPerCubicCentimeter = 0.01; 
-    private const double WeightPerPayloadUnit = 0.1;
+    private const double WeightPerCubicCentimeter = 0.000000001; 
+    private const double WeightPerPayloadUnit = 0.00000001;
 
     protected Container(double maxPayload, string productType, double height, double depth, double width, double temperature = 0)
     {

@@ -69,7 +69,7 @@ class Program
         Console.WriteLine("\nShip 2:");
         ship2.PrintShipInfo();
 
-        GasContainer gasContainer2 = new GasContainer(500, "hazardous", 10, 250, 200, 150);
+        GasContainer gasContainer2 = new GasContainer(500, "hazardous", 10, 25, 20, 150);
         gasContainer2.LoadContainer(200);
         ship2.LoadContainer(gasContainer2);
 
