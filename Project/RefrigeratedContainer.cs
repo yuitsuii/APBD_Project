@@ -51,10 +51,12 @@ public class RefrigeratedContainer : Container
         try
         {
             double maxAllowedWeight = GetMaxAllowedWeight();
+            
             if (CurrentLoad + cargoWeight > maxAllowedWeight)
             {
-                throw new OverfillException("Refrigerated container overloaded! Cannot exceed 90% of max payload.");
+                throw new OverfillException($"Cannot load {cargoWeight} kg. It exceeds the allowed weight for hazardous cargo.");
             }
+            
             CurrentLoad += cargoWeight;
             Console.WriteLine($"Successfully loaded {cargoWeight} kg into refrigerated container. Current load: {CurrentLoad} kg.");
         }
