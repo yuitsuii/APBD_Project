@@ -5,31 +5,36 @@ class Program
     static void Main()
     {
         Console.WriteLine("\nCreating Gas Container...");
-        GasContainer gasContainer = new GasContainer(500, "hazardous", 10);
+        GasContainer gasContainer = new GasContainer(500, "hazardous", 10, 250, 200, 150);
         gasContainer.LoadContainer(200);
         gasContainer.EmptyCargo();
-        Console.WriteLine($"Gas Container Load after emptying: {gasContainer.CurrentLoad} kg\n");
+        Console.WriteLine($"Gas Container Mass of Cargo after emptying: {gasContainer.MassOfCargo} kg\n");
 
         Console.WriteLine("Creating Liquid Container...");
-        LiquidContainer liquidContainer = new LiquidContainer(1000, "hazardous");
+        LiquidContainer liquidContainer = new LiquidContainer(1000, "hazardous", 250, 200, 150);
         liquidContainer.LoadContainer(400);
-        Console.WriteLine($"Liquid Container Load: {liquidContainer.CurrentLoad} kg\n");
+        Console.WriteLine($"Liquid Container Mass of Cargo: {liquidContainer.MassOfCargo} kg\n");
 
         Console.WriteLine("Creating Refrigerated Container with correct values...");
-        RefrigeratedContainer refrigeratedContainer = new RefrigeratedContainer(800, "fish", 2);
+        RefrigeratedContainer refrigeratedContainer = new RefrigeratedContainer(800, "fish", 2, 250, 200, 150);
         Console.WriteLine("Refrigerated container created successfully.\n");
 
         Console.WriteLine("Creating Refrigerated Container with incorrect temperature...");
-        RefrigeratedContainer refrigeratedContainer1 = new RefrigeratedContainer(800, "fish", 20);
+        try
+        {
+            RefrigeratedContainer refrigeratedContainer1 = new RefrigeratedContainer(800, "fish", 20, 250, 200, 150);
+        }
+        catch (ArgumentException ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
 
-        Console.WriteLine("Attempting to overload Liquid Container...");
+        Console.WriteLine("\nAttempting to overload Liquid Container...");
         liquidContainer.LoadContainer(700);
 
-
-        
         Console.WriteLine("\nCreating a Ship...");
-        Ship ship = new Ship(25, 2, 2000); 
-        
+        Ship ship = new Ship(25, 2, 2000);
+
         Console.WriteLine("\nLoading containers onto the ship...");
         ship.LoadContainer(gasContainer);
         ship.LoadContainer(liquidContainer);
@@ -53,19 +58,18 @@ class Program
         ship.PrintShipInfo();
 
         Console.WriteLine("\nCreating another ship for transfer testing...");
-        Ship ship2 = new Ship(30, 3, 3);
-        
+        Ship ship2 = new Ship(30, 3, 4);
+
         Console.WriteLine("\nTransferring a container between ships...");
         ship.TransferContainer(ship2, refrigeratedContainer.SerialNumber);
-        
+
         Console.WriteLine("\nFinal ship statuses:");
         Console.WriteLine("Ship 1:");
         ship.PrintShipInfo();
         Console.WriteLine("\nShip 2:");
         ship2.PrintShipInfo();
-        
-        
-        GasContainer gasContainer2 = new GasContainer(500, "hazardous", 10);
+
+        GasContainer gasContainer2 = new GasContainer(500, "hazardous", 10, 25, 20, 150);
         gasContainer2.LoadContainer(200);
         ship2.LoadContainer(gasContainer2);
 
@@ -90,7 +94,7 @@ class Program
         }
 
         Console.WriteLine("\nEdge Case 3: Loading a non-hazardous liquid container beyond 90% capacity...");
-        LiquidContainer nonHazardousLiquidContainer = new LiquidContainer(1000, "milk");
+        LiquidContainer nonHazardousLiquidContainer = new LiquidContainer(1000, "milk", 250, 200, 150);
         try
         {
             nonHazardousLiquidContainer.LoadContainer(950);
@@ -103,7 +107,7 @@ class Program
         Console.WriteLine("\nEdge Case 4: Loading a refrigerated container with an invalid product type...");
         try
         {
-            RefrigeratedContainer invalidProductContainer = new RefrigeratedContainer(800, "invalid", 2);
+            RefrigeratedContainer invalidProductContainer = new RefrigeratedContainer(800, "invalid", 2, 250, 200, 150);
         }
         catch (ArgumentException ex)
         {
@@ -113,7 +117,7 @@ class Program
         Console.WriteLine("\nEdge Case 5: Loading a refrigerated container with a temperature outside the allowed range...");
         try
         {
-            RefrigeratedContainer invalidTempContainer = new RefrigeratedContainer(800, "fish", 20);
+            RefrigeratedContainer invalidTempContainer = new RefrigeratedContainer(800, "fish", 20, 250, 200, 150);
         }
         catch (ArgumentException ex)
         {
@@ -134,8 +138,12 @@ class Program
         }
 
         Console.WriteLine("\nEdge Case 7: Replacing a container with one that exceeds the ship's weight limit...");
-        Container heavyContainer = new RefrigeratedContainer(5000, "fish", 2);
-        heavyContainer.LoadContainer(4500);
+        Container heavyContainer = new RefrigeratedContainer(5000, "fish", 2, 250, 200, 150);
+        heavyContainer.LoadContainer(4500); 
+        ship2.LoadContainer(heavyContainer);
+        LiquidContainer liquidContainer2 = new LiquidContainer(1000, "hazardous", 25, 20, 150);
+        ship2.LoadContainer(liquidContainer2);
+        ship2.PrintShipInfo();
         try
         {
             Console.WriteLine("DEBUG: Containers before calling ReplaceContainer:");
@@ -143,7 +151,7 @@ class Program
             {
                 Console.WriteLine($" - {c.SerialNumber}");
             }
-            ship2.ReplaceContainer(refrigeratedContainer.SerialNumber, heavyContainer);
+            ship2.ReplaceContainer(liquidContainer2.SerialNumber, heavyContainer);
         }
         catch (Exception ex)
         {
@@ -179,7 +187,5 @@ class Program
         {
             Console.WriteLine($"Expected error: {ex.Message}");
         }
-        
-        
     }
 }

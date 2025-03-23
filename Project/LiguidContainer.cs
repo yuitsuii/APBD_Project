@@ -2,7 +2,8 @@
 
 public class LiquidContainer : Container, IHazardNotifier
 {
-    public LiquidContainer(double maxPayload, string productType) : base(maxPayload, productType) { }
+    public LiquidContainer(double maxPayload, string productType, double height, double depth, double width)
+        : base(maxPayload, productType, height, depth, width) { }
 
     public override string GetContainerType()
     {
@@ -20,14 +21,14 @@ public class LiquidContainer : Container, IHazardNotifier
         {
             double maxAllowedWeight = GetMaxAllowedWeight();
 
-            if (cargoWeight + CurrentLoad > maxAllowedWeight)
+            if (cargoWeight + MassOfCargo > maxAllowedWeight)
             {
                 SendHazardNotification("Overload attempt detected!", SerialNumber);
                 throw new OverfillException($"Cannot load {cargoWeight} kg. It exceeds the allowed weight for hazardous cargo.");
             }
 
-            CurrentLoad += cargoWeight;
-            Console.WriteLine($"Successfully loaded {cargoWeight} kg into liquid container. Current load: {CurrentLoad} kg.");
+            MassOfCargo += cargoWeight;
+            Console.WriteLine($"Successfully loaded {cargoWeight} kg into liquid container. Mass of cargo: {MassOfCargo} kg.");
         }
         catch (OverfillException ex)
         {
